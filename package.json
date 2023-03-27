@@ -26,7 +26,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "homepage": "./zmanim-sheet/",
+  "homepage": "/zmanim-sheet/",
   "eslintConfig": {
     "extends": [
       "react-app",
