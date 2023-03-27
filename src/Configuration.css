@@ -1,3 +1,5 @@
-.Configuration-form > * {
-    margin-top: 
+.Configuration-form {
+    display: flex;
+    flex-direction: column;
 }
+

@@ -11,11 +11,26 @@
   overflow-y: scroll;
   display: flex;
   justify-content: center;
-  /* background-color: #fdfdfd; */
 }
 
 .App-config-pane {
-  box-sizing: content-box;
+  box-sizing: border-box;
   width: 35%;
-  /* background-color: #8cc7fe; */
 }
+
+@media only screen and (max-width: 700px) {
+  .App {
+    flex-direction: column;
+    overflow-y: scroll;
+  }
+  
+  .App-config-pane {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .App-preview {
+    overflow-y: visible;
+  }
+}
+
