@@ -1,0 +1,83 @@
+.ZmanimSheet {
+    margin: 8px;
+    direction: rtl;
+}
+
+.ZmanimSheet-page-box {
+    padding: 16px;
+    margin: 8px 0 8px 0;
+}
+
+.ZmanimSheet-page {
+    width: 105mm;
+    height: 148.5mm;
+    display: flex;
+    flex-direction: column;
+    direction: rtl;
+}
+
+.ZmanimSheet-footer {
+    text-align: center;
+}
+
+.ZmanimSheet-times {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-flow: column wrap;
+}
+
+.ZmanimSheet-row {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-style: solid;
+    border-color: black;
+    border-width: 0 0 0 2px;
+}
+
+.ZmanimSheet-row > p{
+    margin: 0 4px 0 4px;
+    padding: 0.6px;
+}
+
+.ZmanimSheet-title {
+    font-weight: bold;
+    justify-content: center;
+    background-color: bisque;
+    border: 1px solid black;
+    border-width: 1px 0 1px 2px;
+}
+
+.ZmanimSheet-header {
+    font-weight: bold;
+    justify-content: center;
+    background-color: lightgray;
+    border: 1px solid black;
+    border-width: 1px 0 1px 2px;
+}
+
+.ZmanimSheet-header > p {
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+.ZmanimSheet-halacha {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    border-style: double;
+    border-color: black;
+    border-width: 4px 0 0 0;
+}
+
+.ZmanimSheet-halacha-title {
+    font-weight: bold;
+}
+
+.ZmanimSheet-times > :last-child {
+    border-style: double;
+    border-color: black;
+    border-bottom-width: 4px;
+}
