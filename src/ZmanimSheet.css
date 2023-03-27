@@ -1,4 +1,4 @@
-.ZmanimSheet {
+.ZmanimSheet-preview {
     margin: 8px;
     direction: rtl;
 }
@@ -6,6 +6,21 @@
 .ZmanimSheet-page-box {
     padding: 16px;
     margin: 8px 0 8px 0;
+}
+
+@media print {
+    @page {
+        size: 105mm 148.5mm;
+        margin: 4mm;
+    }
+
+    .ZmanimSheet-print {
+        scale: 96%;
+    }
+}
+
+.ZmanimSheet-hide {
+    display: none;
 }
 
 .ZmanimSheet-page {

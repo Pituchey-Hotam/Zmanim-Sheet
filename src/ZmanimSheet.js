@@ -5,26 +5,41 @@ import Paper from '@mui/material/Paper'
 import * as KosherZmanim from "kosher-zmanim";
 import { DateTime } from "luxon";
 
-function ZmanimSheet({sunrisePageRef, lat, lon, elevation, footerText, timesFontSize, halachaFontSize, columnCount}) {
+function ZmanimSheet({printRef, lat, lon, elevation, footerText, timesFontSize, halachaFontSize, columnCount}) {
     
     const { sunrises, sunsets } = useMemo(() => calculateYearZmanim(lat, lon, elevation), [lat, lon, elevation]);
 
+    const sunriseHalachot =
+        <>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="עלות השחר" content="72/90 דק' לפני הנץ (לחומרא)" />
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תפילה וק&quot;ש" content="משיכיר 45 דק' לפני הנץ" note="אם מתפללים מעלות השחר, לא מברכים על ציצית ותפילין. לאשכנזים - גם לא מברכים ברכת יוצר אור (מברכים רק משיכיר)." />
+        </>
+
+    const sunsetHalachot =
+        <>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="מנחה" content="באופן קבוע ב - 12:25 / 13:25 (שעון חורף / קיץ) סוף זמן: שקיעה" />
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="ק&quot;ש של ערבית" content="24 דק' אחרי שקיעה" />
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תוספת שבת" content="יש לנהוג על פי הרשום בלוחות. בשעת הדחק מספיק קדות ספורות." />
+        </>
+
     return (
-        <div className="ZmanimSheet">
-            <SheetPage ref={sunrisePageRef} columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="הנץ" entries={sunrises} halachot={
-                <>
-                    <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="עלות השחר" content="72/90 דק' לפני הנץ (לחומרא)" />
-                    <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תפילה וק&quot;ש" content="משיכיר 45 דק' לפני הנץ" note="אם מתפללים מעלות השחר, לא מברכים על ציצית ותפילין. לאשכנזים - גם לא מברכים ברכת יוצר אור (מברכים רק משיכיר)." />
-                </>
-            }/>
-            <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="שקיעה" entries={sunsets} halachot={
-                <>
-                    <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="מנחה" content="באופן קבוע ב - 12:25 / 13:25 (שעון חורף / קיץ) סוף זמן: שקיעה" />
-                    <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="ק&quot;ש של ערבית" content="24 דק' אחרי שקיעה" />
-                    <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תוספת שבת" content="יש לנהוג על פי הרשום בלוחות. בשעת הדחק מספיק קדות ספורות." />
-                </>
-            }/>
-        </div>
+        <>
+            <div className="ZmanimSheet-preview">
+                <Paper elevation={2} className="ZmanimSheet-page-box">
+                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="הנץ" entries={sunrises} halachot={sunriseHalachot} />
+                </Paper>
+                <Paper elevation={2} className="ZmanimSheet-page-box">
+                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="שקיעה" entries={sunsets} halachot={sunsetHalachot} />
+                </Paper>
+            </div>
+
+            <div className="ZmanimSheet-hide">
+                <div className="ZmanimSheet-print" ref={printRef}>
+                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="הנץ" entries={sunrises} halachot={sunriseHalachot} />
+                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="שקיעה" entries={sunsets} halachot={sunsetHalachot} />
+                </div>
+            </div>
+        </>
     )
 }
 
@@ -65,14 +80,12 @@ const SheetPage = React.forwardRef((props, ref) => {
     rows.push(halachot)
     
     return (
-        <Paper elevation={2} className="ZmanimSheet-page-box">
-            <div className="ZmanimSheet-page" ref={ref} style={{ 'font-size': +timesFontSize }}>
-                <div className="ZmanimSheet-times">
-                    {rows}
-                </div>
-                <div className="ZmanimSheet-footer" style={{ 'font-size': timesFontSize-2 }}>{ footerText }</div>
+        <div className="ZmanimSheet-page" ref={ref} style={{ 'font-size': +timesFontSize }}>
+            <div className="ZmanimSheet-times">
+                {rows}
             </div>
-        </Paper>
+            <div className="ZmanimSheet-footer" style={{ 'font-size': timesFontSize-2 }}>{ footerText }</div>
+        </div>
     )
 });
 

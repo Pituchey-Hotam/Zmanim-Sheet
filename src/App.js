@@ -22,7 +22,7 @@ const theme = createTheme({
 });
 
 function App() {
-	const zmanimPageRef = useRef();
+	const printRef = useRef();
 
 	const [lat, setLat] = useState('31.76832');
 	const [lon, setLon] = useState('35.21371');
@@ -39,7 +39,7 @@ function App() {
 				<div className="App">
 					<Paper elevation={4} square className="App-config-pane">
 						<Configuration
-							zmanimPageRef={zmanimPageRef}
+							printRef={printRef}
 							lat={lat}
 							setLat={setLat}
 							lon={lon}
@@ -57,7 +57,7 @@ function App() {
 					</Paper>
 					<div className="App-preview">
 						<ZmanimSheet
-							sunrisePageRef={zmanimPageRef}
+							printRef={printRef}
 							lon={lon}
 							lat={lat}
 							elevation={elevation}

@@ -10,7 +10,7 @@ import PrintIcon from '@mui/icons-material/Print';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 function Configuration({
-            zmanimPageRef,
+            printRef,
             footerText,
             setfooterText,
             lat,
@@ -27,7 +27,7 @@ function Configuration({
             setColumnCount
         }) {
 	const handlePrint = useReactToPrint({
-		content: () => zmanimPageRef.current,
+		content: () => printRef.current,
 	});
 
 	return (
