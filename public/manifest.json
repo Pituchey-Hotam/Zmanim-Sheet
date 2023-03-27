@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "חישוב זמני היום",
+  "name": "חישוב זמני היום | פיתוחי חותם",
   "icons": [
     {
       "src": "favicon.ico",
