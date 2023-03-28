@@ -23,6 +23,7 @@ const theme = createTheme({
 
 function App() {
 	const printRef = useRef();
+	const previewWrapperRef = useRef();
 
 	const [lat, setLat] = useState('31.76832');
 	const [lon, setLon] = useState('35.21371');
@@ -55,9 +56,10 @@ function App() {
 							columnCount={columnCount}
 							setColumnCount={setColumnCount} />
 					</Paper>
-					<div className="App-preview">
+					<div className="App-preview" ref={previewWrapperRef}>
 						<ZmanimSheet
 							printRef={printRef}
+							wrapperRef={previewWrapperRef}
 							lon={lon}
 							lat={lat}
 							elevation={elevation}

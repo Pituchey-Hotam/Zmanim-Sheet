@@ -1,13 +1,31 @@
 import './ZmanimSheet.css';
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 
 import Paper from '@mui/material/Paper'
 import * as KosherZmanim from "kosher-zmanim";
 import { DateTime } from "luxon";
 
-function ZmanimSheet({printRef, lat, lon, elevation, footerText, timesFontSize, halachaFontSize, columnCount}) {
-    
+const applyScaling = (scaledWrapper, scaledContent) => {
+    scaledContent.style.transform = 'scale(1)';
+
+    let { width: childWidth } = scaledContent.getBoundingClientRect();
+    let { width: wrapperWidth } = scaledWrapper.getBoundingClientRect();
+    let scale = Math.min(wrapperWidth / childWidth, 1.6);
+    scaledContent.style.transform = `scale(${scale})`;
+};
+
+function ZmanimSheet({printRef, wrapperRef, lat, lon, elevation, footerText, timesFontSize, halachaFontSize, columnCount}) {
     const { sunrises, sunsets } = useMemo(() => calculateYearZmanim(lat, lon, elevation), [lat, lon, elevation]);
+    
+    const scaledContentRef = useRef();
+    useEffect(() => {
+        const listener = () => { applyScaling(wrapperRef.current, scaledContentRef.current) };
+        if(wrapperRef.current && scaledContentRef.current) { 
+            window.addEventListener("resize", listener);
+            listener();
+        }
+        return () => { window.removeEventListener("resize", listener) }
+    }, [wrapperRef, scaledContentRef])
 
     const sunriseHalachot =
         <>
@@ -24,7 +42,7 @@ function ZmanimSheet({printRef, lat, lon, elevation, footerText, timesFontSize, 
 
     return (
         <>
-            <div className="ZmanimSheet-preview">
+            <div className="ZmanimSheet-preview" ref={scaledContentRef}>
                 <Paper elevation={2} className="ZmanimSheet-page-box">
                     <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="הנץ" entries={sunrises} halachot={sunriseHalachot} />
                 </Paper>
@@ -80,11 +98,11 @@ const SheetPage = React.forwardRef((props, ref) => {
     rows.push(halachot)
     
     return (
-        <div className="ZmanimSheet-page" ref={ref} style={{ 'font-size': +timesFontSize }}>
+        <div className="ZmanimSheet-page" ref={ref} style={{ 'fontSize': +timesFontSize }}>
             <div className="ZmanimSheet-times">
                 {rows}
             </div>
-            <div className="ZmanimSheet-footer" style={{ 'font-size': timesFontSize-2 }}>{ footerText }</div>
+            <div className="ZmanimSheet-footer" style={{ 'fontSize': timesFontSize-2 }}>{ footerText }</div>
         </div>
     )
 });
@@ -93,8 +111,8 @@ function Halacha({title, content, note, fontSize, columnCount}) {
     return (
         <div className="ZmanimSheet-row ZmanimSheet-halacha" style={{ width: (100/columnCount)+'%' }} >
             <p className="ZmanimSheet-halacha-title">{title}</p>
-            <p style={{ 'font-size': +fontSize }}>{content}</p>
-            { note !== undefined ? <p className="ZmanimSheet-halacha-note" style={{ 'font-size': fontSize-2 }}>{note}</p> : "" }
+            <p style={{ 'fontSize': +fontSize }}>{content}</p>
+            { note !== undefined ? <p className="ZmanimSheet-halacha-note" style={{ 'fontSize': fontSize-2 }}>{note}</p> : "" }
         </div>
     )
 }

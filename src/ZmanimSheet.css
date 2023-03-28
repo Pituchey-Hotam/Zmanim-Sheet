@@ -1,6 +1,7 @@
 .ZmanimSheet-preview {
-    margin: 8px;
+    padding: 0 16px;
     direction: rtl;
+    transform-origin: 50% 0;
 }
 
 .ZmanimSheet-page-box {
