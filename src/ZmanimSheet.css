@@ -7,16 +7,21 @@
 .ZmanimSheet-page-box {
     padding: 16px;
     margin: 8px 0 8px 0;
+    overflow: hidden;
 }
 
 @media print {
     @page {
-        size: 105mm 148.5mm;
-        margin: 4mm;
+        size: 105mm 149mm;
     }
 
-    .ZmanimSheet-print {
-        scale: 96%;
+    html {
+        margin: auto;
+    }
+
+    .ZmanimSheet-page {
+        transform: scale(97%);
+        page-break-inside: avoid;
     }
 }
 
@@ -41,6 +46,7 @@
     min-height: 0;
     display: flex;
     flex-flow: column wrap;
+    align-content: flex-start;
 }
 
 .ZmanimSheet-row {
@@ -51,6 +57,7 @@
     border-style: solid;
     border-color: black;
     border-width: 0 0 0 2px;
+    overflow: hidden;
 }
 
 .ZmanimSheet-row > p{

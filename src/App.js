@@ -33,6 +33,7 @@ function App() {
 	const [timesFontSize, setTimesFontSize] = useState('9');
 	const [halachaFontSize, setHalachaFontSize] = useState('8');
 	const [columnCount, setColumnCount] = useState('7');
+	const [showHalachot, setShowHalachot] = useState(true);
 
 	return (
 		<CacheProvider value={cacheRtl}>
@@ -54,7 +55,9 @@ function App() {
 							halachaFontSize={halachaFontSize}
 							setHalachaFontSize={setHalachaFontSize}
 							columnCount={columnCount}
-							setColumnCount={setColumnCount} />
+							setColumnCount={setColumnCount}
+							showHalachot={showHalachot}
+							setShowHalachot={setShowHalachot} />
 					</Paper>
 					<div className="App-preview" ref={previewWrapperRef}>
 						<ZmanimSheet
@@ -66,7 +69,8 @@ function App() {
 							footerText={footerText}
 							timesFontSize={timesFontSize}
 							halachaFontSize={halachaFontSize}
-							columnCount={columnCount} />
+							columnCount={columnCount}
+							showHalachot={showHalachot} />
 					</div>
 				</div>
 			</ThemeProvider>

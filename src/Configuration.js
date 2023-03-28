@@ -5,6 +5,8 @@ import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import PrintIcon from '@mui/icons-material/Print';
 
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
@@ -24,8 +26,11 @@ function Configuration({
             halachaFontSize,
             setHalachaFontSize,
             columnCount,
-            setColumnCount
+            setColumnCount,
+            showHalachot,
+            setShowHalachot
         }) {
+
 	const handlePrint = useReactToPrint({
 		content: () => printRef.current,
 	});
@@ -48,6 +53,9 @@ function Configuration({
                     <TextField sx={{ mr: 0.5, flex: 1 }} label="גופן זמנים" variant="filled" type="number" value={timesFontSize} onChange={(e) => setTimesFontSize(e.target.value)} />
                     <TextField sx={{ ml: 0.5, flex: 1 }} label="גופן הלכות" variant="filled" type="number" value={halachaFontSize} onChange={(e) => setHalachaFontSize(e.target.value)} />
                 </Box>
+                <FormControlLabel sx={{ ml: 1, mt: 1 }} control={
+                    <Checkbox checked={showHalachot} onChange={(e) => setShowHalachot(e.target.checked)} />
+                } label="הצג הלכות" />
                 <TextField sx={{ mt: 1 }} label="כיתוב תחתון" variant="filled" fullWidth value={footerText} onChange={(e) => setfooterText(e.target.value)} />
 			    <Button sx={{ mt: 1 }} variant="contained" startIcon={<PrintIcon />} onClick={handlePrint} >הדפסה</Button>
 			</Box>
