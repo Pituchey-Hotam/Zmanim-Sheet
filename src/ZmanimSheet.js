@@ -14,8 +14,8 @@ const applyScaling = (scaledWrapper, scaledContent) => {
     scaledContent.style.transform = `scale(${scale})`;
 };
 
-function ZmanimSheet({printRef, wrapperRef, lat, lon, elevation, footerText, timesFontSize, halachaFontSize, columnCount, showHalachot}) {
-    const { sunrises, sunsets } = useMemo(() => calculateYearZmanim(lat, lon, elevation), [lat, lon, elevation]);
+function ZmanimSheet({printRef, wrapperRef, lat, lng, elevation, footerText, timesFontSize, halachaFontSize, columnCount, showHalachot}) {
+    const { sunrises, sunsets } = useMemo(() => calculateYearZmanim(lat, lng, elevation), [lat, lng, elevation]);
     
     const scaledContentRef = useRef();
     useEffect(() => {
@@ -128,10 +128,10 @@ function Halacha({title, content, note, fontSize, columnCount}) {
     )
 }
 
-function calculateYearZmanim(lat, lon, elevation) {
+function calculateYearZmanim(lat, lng, elevation) {
     const zmanimCalendar = new KosherZmanim.ZmanimCalendar()
     try {
-        zmanimCalendar.setGeoLocation(new KosherZmanim.GeoLocation("", lat, lon, elevation))
+        zmanimCalendar.setGeoLocation(new KosherZmanim.GeoLocation("", lat, lng, elevation))
     }
     catch (e) {
         return { sunrises: [], sunsets: [] }

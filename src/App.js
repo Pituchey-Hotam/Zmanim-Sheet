@@ -25,9 +25,8 @@ function App() {
 	const printRef = useRef();
 	const previewWrapperRef = useRef();
 
-	const [lat, setLat] = useState('31.76832');
-	const [lon, setLon] = useState('35.21371');
-	const [elevation, setElevation] = useState('779.46');
+	const [pos, setPos] = useState({lat: 32.145774928228875, lng: 34.81859553369716});
+	const [elevation, setElevation] = useState('');
 	
 	const [footerText, setfooterText] = useState('');
 	const [timesFontSize, setTimesFontSize] = useState('9');
@@ -42,10 +41,8 @@ function App() {
 					<Paper elevation={4} square className="App-config-pane">
 						<Configuration
 							printRef={printRef}
-							lat={lat}
-							setLat={setLat}
-							lon={lon}
-							setLon={setLon}
+							pos={pos}
+							setPos={setPos}
 							elevation={elevation}
 							setElevation={setElevation}
 							footerText={footerText}
@@ -63,8 +60,8 @@ function App() {
 						<ZmanimSheet
 							printRef={printRef}
 							wrapperRef={previewWrapperRef}
-							lon={lon}
-							lat={lat}
+							lat={pos.lat}
+							lng={pos.lng}
 							elevation={elevation}
 							footerText={footerText}
 							timesFontSize={timesFontSize}

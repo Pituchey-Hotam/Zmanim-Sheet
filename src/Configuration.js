@@ -1,5 +1,7 @@
+import 'leaflet/dist/leaflet.css'
 import './Configuration.css';
 
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
@@ -9,17 +11,23 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import PrintIcon from '@mui/icons-material/Print';
 
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
+import Leaflet from 'leaflet'
+import { IconButton, InputAdornment } from '@mui/material';
+import { Search } from '@mui/icons-material';
+Leaflet.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 function Configuration({
             printRef,
             footerText,
             setfooterText,
-            lat,
-            lon,
+            pos,
+            setPos,
             elevation,
-            setLat,
-            setLon,
             setElevation,
             timesFontSize,
             setTimesFontSize,
@@ -35,14 +43,35 @@ function Configuration({
 		content: () => printRef.current,
 	});
 
+    const [searchQuery, setSearchQuery] = useState("");
+    const handleSearch = async () => {
+        const newPos = await fetchLocationResultsFor(searchQuery);
+        if (newPos) setPos(newPos);
+    }
+
+    /* useEffect(() => {
+        const ele = fetchElevationFor(pos)
+        setElevation(ele)
+    }, [pos, setElevation]) */
+
 	return (
 		<Box sx={{ p: 1 }}>
 			<Box component="form" className="Configuration-form">
-                <TextField label="מיקום" variant="filled" fullWidth />
-                <Box sx={{ minHeight: 196, minWidth: 256 }}></Box>
-                <Box sx={{ display:'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <TextField sx={{ mr: 0.5, flex: 1 }} label="קו רוחב" variant="filled" type="number" value={lat} onChange={(e) => setLat(e.target.value)} />
-                    <TextField sx={{ ml: 0.5, flex: 1 }} label="קו אורך" variant="filled" type="number" value={lon} onChange={(e) => setLon(e.target.value)} />
+                <TextField label="חפש מיקום" variant="filled" fullWidth value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} InputProps={{
+                    endAdornment: <InputAdornment position="end">
+                        <IconButton edger="end" onClick={ handleSearch }>
+                            <Search />
+                        </IconButton>
+                    </InputAdornment>
+                }} />
+
+                <Box sx={{ mt: 1, height: 256 }}>
+                    <SelectionMap pos={pos} setPos={setPos} />
+                </Box>
+                
+                <Box sx={{ mt: 1, display:'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TextField sx={{ mr: 0.5, flex: 1 }} label="קו רוחב" variant="filled" type="number" value={(+pos.lat).toFixed(6)} onChange={(e) => setPos({ lat: parseFloat(e.target.value), lng: pos.lng })} />
+                    <TextField sx={{ ml: 0.5, flex: 1 }} label="קו אורך" variant="filled" type="number" value={(+pos.lng).toFixed(6)} onChange={(e) => setPos({ lat: pos.lat, lng: parseFloat(e.target.value) })} />
                 </Box>
                 <TextField sx={{ mt: 1 }} label="גובה (מטרים)" variant="filled" type="number" value={elevation} onChange={(e) => setElevation(e.target.value)} />
                 
@@ -61,6 +90,62 @@ function Configuration({
 			</Box>
 		</Box>
 	)
+}
+
+function SelectionMap({pos, setPos}) {
+    const [map, setMap] = useState(null);
+    const markerRef = useRef();
+    const eventHandlers = useMemo(() => ({
+        dragend() {
+            const marker = markerRef.current
+            if(marker) {
+                setPos(marker.getLatLng())
+            }
+        }
+    }));
+
+    return (
+        <MapContainer style={{ height: '100%' }} center={pos} zoom={13} scrollWheelZoom={false} whenCreated={setMap}>
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+
+            <Marker 
+                ref={markerRef}
+                draggable={true}
+                eventHandlers={eventHandlers}
+                position={pos}>
+            </Marker>
+
+            <CenterUpdater center={pos} />
+        </MapContainer>
+    )
+}
+
+function CenterUpdater({ center }) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (map) map.flyTo(center);
+    }, [map, center])
+}
+
+async function fetchElevationFor(pos) {
+    const resp = await fetch("https://api.opentopodata.org/v1/aster30m?locations=" + pos.lat + "," + pos.lng)
+    if (resp.ok) {
+        return resp.json().results[0].elevation
+    }
+    else return 0
+}
+
+async function fetchLocationResultsFor(query) {
+    const resp = await fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query));
+    if (resp.ok) {
+        const results = await resp.json()
+        if (results.length > 0) return { lat: results[0].lat, lng: results[0].lon }
+    }
+    return null;
 }
 
 export default Configuration;
