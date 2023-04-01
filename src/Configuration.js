@@ -58,17 +58,19 @@ function Configuration({
     }, [pos, setElevation])
 
 	return (
-		<Box sx={{ p: 1, height: '100%', boxSizing: 'border-box' }}>
-			<Box component="form" className="Configuration-form" style={{ height: '100%' }}>
-                <TextField label="חפש מיקום" variant="filled" fullWidth value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} InputProps={{
-                    endAdornment: <InputAdornment position="end">
-                        <IconButton edger="end" onClick={ handleSearch }>
-                            <Search />
-                        </IconButton>
-                    </InputAdornment>
-                }} />
+		<Box sx={{ p: 1, boxSizing: 'border-box', height: '100%' }}>
+			<Box className="Configuration-form" sx={{ height: '100%' }}>
+                <form onSubmit={ (e) => { handleSearch(); e.preventDefault(); } }>
+                    <TextField label="חפש מיקום" variant="filled" fullWidth value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} InputProps={{
+                        endAdornment: <InputAdornment position="end">
+                            <IconButton type="submit" edger="end">
+                                <Search />
+                            </IconButton>
+                        </InputAdornment>
+                    }} />
+                </form>
 
-                <Box sx={{ mt: 1, maxHeight: 256, flex: 1 }}>
+                <Box className="Configuration-map" sx={{ mt: 1, maxHeight: 256, flex: 1 }}>
                     <SelectionMap pos={pos} setPos={setPos} />
                 </Box>
                 
