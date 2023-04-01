@@ -13,21 +13,30 @@ import ZmanimSheet from './ZmanimSheet.js'
 import Configuration from './Configuration.js'
 
 const cacheRtl = createCache({
-  key: 'muirtl',
-  stylisPlugins: [prefixer, rtlPlugin],
+	key: 'muirtl',
+	stylisPlugins: [prefixer, rtlPlugin],
 });
 
 const theme = createTheme({
-	direction: 'rtl'
+	direction: 'rtl',
+	palette: {
+		mode: 'light',
+		primary: {
+			main: '#b71c1c',
+		},
+		secondary: {
+			main: '#f50057',
+		},
+	},
 });
 
 function App() {
 	const printRef = useRef();
 	const previewWrapperRef = useRef();
 
-	const [pos, setPos] = useState({lat: 32.145774928228875, lng: 34.81859553369716});
-	const [elevation, setElevation] = useState('');
-	
+	const [pos, setPos] = useState({ lat: 32.145774928228875, lng: 34.81859553369716 });
+	const [elevation, setElevation] = useState(0);
+
 	const [footerText, setfooterText] = useState('');
 	const [timesFontSize, setTimesFontSize] = useState('9');
 	const [halachaFontSize, setHalachaFontSize] = useState('8');

@@ -49,14 +49,17 @@ function Configuration({
         if (newPos) setPos(newPos);
     }
 
-    /* useEffect(() => {
-        const ele = fetchElevationFor(pos)
-        setElevation(ele)
-    }, [pos, setElevation]) */
+    useEffect(() => {
+        async function updateElevation() {
+            const ele = await fetchElevationFor(pos);
+            setElevation(ele);
+        }
+        updateElevation();
+    }, [pos, setElevation])
 
 	return (
-		<Box sx={{ p: 1 }}>
-			<Box component="form" className="Configuration-form">
+		<Box sx={{ p: 1, height: '100%', boxSizing: 'border-box' }}>
+			<Box component="form" className="Configuration-form" style={{ height: '100%' }}>
                 <TextField label="חפש מיקום" variant="filled" fullWidth value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} InputProps={{
                     endAdornment: <InputAdornment position="end">
                         <IconButton edger="end" onClick={ handleSearch }>
@@ -65,7 +68,7 @@ function Configuration({
                     </InputAdornment>
                 }} />
 
-                <Box sx={{ mt: 1, height: 256 }}>
+                <Box sx={{ mt: 1, maxHeight: 256, flex: 1 }}>
                     <SelectionMap pos={pos} setPos={setPos} />
                 </Box>
                 
@@ -73,7 +76,7 @@ function Configuration({
                     <TextField sx={{ mr: 0.5, flex: 1 }} label="קו רוחב" variant="filled" type="number" value={(+pos.lat).toFixed(6)} onChange={(e) => setPos({ lat: parseFloat(e.target.value), lng: pos.lng })} />
                     <TextField sx={{ ml: 0.5, flex: 1 }} label="קו אורך" variant="filled" type="number" value={(+pos.lng).toFixed(6)} onChange={(e) => setPos({ lat: pos.lat, lng: parseFloat(e.target.value) })} />
                 </Box>
-                <TextField sx={{ mt: 1 }} label="גובה (מטרים)" variant="filled" type="number" value={elevation} onChange={(e) => setElevation(e.target.value)} />
+                <TextField sx={{ mt: 1 }} label="גובה (מטרים)" variant="filled" type="number" value={elevation} onChange={(e) => setElevation(parseFloat(e.target.value))} />
                 
                 <Divider sx={{ m: 2 }} />
                 
@@ -93,7 +96,6 @@ function Configuration({
 }
 
 function SelectionMap({pos, setPos}) {
-    const [map, setMap] = useState(null);
     const markerRef = useRef();
     const eventHandlers = useMemo(() => ({
         dragend() {
@@ -102,10 +104,10 @@ function SelectionMap({pos, setPos}) {
                 setPos(marker.getLatLng())
             }
         }
-    }));
+    }), [markerRef, setPos]);
 
     return (
-        <MapContainer style={{ height: '100%' }} center={pos} zoom={13} scrollWheelZoom={false} whenCreated={setMap}>
+        <MapContainer style={{ height: '100%' }} center={pos} zoom={13} scrollWheelZoom={false} >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -132,9 +134,10 @@ function CenterUpdater({ center }) {
 }
 
 async function fetchElevationFor(pos) {
-    const resp = await fetch("https://api.opentopodata.org/v1/aster30m?locations=" + pos.lat + "," + pos.lng)
+    const resp = await fetch("https://api.open-meteo.com/v1/elevation?latitude=" + pos.lat + "&longitude=" + pos.lng)
     if (resp.ok) {
-        return resp.json().results[0].elevation
+        const results = await resp.json()
+        return results.elevation[0]
     }
     else return 0
 }
