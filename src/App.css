@@ -19,6 +19,15 @@
   width: 35%;
 }
 
+.MuiDialogContentText-root {
+  text-align: justify;
+}
+
+.App-logo {
+  display: block;
+  margin: 0 auto;
+}
+
 @media only screen and (max-width: 700px) {
   .App {
     flex-direction: column;
