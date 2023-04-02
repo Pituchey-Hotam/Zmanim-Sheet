@@ -39,15 +39,27 @@ function Configuration({
             setShowHalachot
         }) {
 
+    const [locationName, setLocationName] = useState("לא ידוע");
+
 	const handlePrint = useReactToPrint({
 		content: () => printRef.current,
+        documentTitle: "זמני היום ל" + locationName + " - " + new Date().getFullYear()
 	});
 
     const [searchQuery, setSearchQuery] = useState("");
     const handleSearch = async () => {
         const newPos = await fetchLocationResultsFor(searchQuery);
-        if (newPos) setPos(newPos);
+        if (newPos) {
+            setPos(newPos);
+            setLocationName(searchQuery);
+        }
+    };
+
+    const updateLocationName = async (newPos) => {
+        const ele = await fetchNameForLocation(newPos);
+        setLocationName(ele);
     }
+    useEffect(() => { updateLocationName(pos) }, []);
 
     useEffect(() => {
         async function updateElevation() {
@@ -55,7 +67,11 @@ function Configuration({
             setElevation(ele);
         }
         updateElevation();
-    }, [pos, setElevation])
+    }, [pos, setElevation]);
+
+    useEffect(() => {
+        setfooterText("זמנים ל" + locationName + ", " + new Date().getFullYear() + ". יש לקחת בחשבון סטייה של עד כשתי דקות.")
+    }, [locationName, setfooterText]);
 
 	return (
 		<Box sx={{ p: 1, boxSizing: 'border-box', height: '100%' }}>
@@ -71,12 +87,12 @@ function Configuration({
                 </form>
 
                 <Box className="Configuration-map" sx={{ mt: 1, maxHeight: 256, flex: 1 }}>
-                    <SelectionMap pos={pos} setPos={setPos} />
+                    <SelectionMap pos={pos} setPos={(pos) => { setPos(pos); updateLocationName(pos); }} />
                 </Box>
                 
                 <Box sx={{ mt: 1, display:'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <TextField sx={{ mr: 0.5, flex: 1 }} label="קו רוחב" variant="filled" type="number" value={(+pos.lat).toFixed(6)} onChange={(e) => setPos({ lat: parseFloat(e.target.value), lng: pos.lng })} />
-                    <TextField sx={{ ml: 0.5, flex: 1 }} label="קו אורך" variant="filled" type="number" value={(+pos.lng).toFixed(6)} onChange={(e) => setPos({ lat: pos.lat, lng: parseFloat(e.target.value) })} />
+                    <TextField sx={{ mr: 0.5, flex: 1 }} label="קו רוחב" variant="filled" type="number" value={(+pos.lat).toFixed(6)} onChange={(e) => { const newPos = { lat: parseFloat(e.target.value), lng: pos.lng }; setPos(newPos); updateLocationName(newPos); }}/>
+                    <TextField sx={{ ml: 0.5, flex: 1 }} label="קו אורך" variant="filled" type="number" value={(+pos.lng).toFixed(6)} onChange={(e) => { const newPos = { lat: pos.lat, lng: parseFloat(e.target.value) }; setPos(newPos); updateLocationName(newPos); }} />
                 </Box>
                 <TextField sx={{ mt: 1 }} label="גובה (מטרים)" variant="filled" type="number" value={elevation} onChange={(e) => setElevation(parseFloat(e.target.value))} />
                 
@@ -149,6 +165,15 @@ async function fetchLocationResultsFor(query) {
     if (resp.ok) {
         const results = await resp.json()
         if (results.length > 0) return { lat: results[0].lat, lng: results[0].lon }
+    }
+    return null;
+}
+
+async function fetchNameForLocation(pos) {
+    const resp = await fetch("https://nominatim.openstreetmap.org/reverse?format=json&accept-language=he&zoom=15&lat=" + pos.lat + "&lon=" + pos.lng);
+    if (resp.ok) {
+        const results = await resp.json()
+        if (results.address) return results.address.city || results.address.town || results.address.municipality || results.address.village
     }
     return null;
 }
