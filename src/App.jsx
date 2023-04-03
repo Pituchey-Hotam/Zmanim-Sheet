@@ -13,8 +13,8 @@ import { QuestionMark } from '@mui/icons-material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-import ZmanimSheet from './ZmanimSheet.js'
-import Configuration from './Configuration.js'
+import ZmanimSheet from './ZmanimSheet.jsx'
+import Configuration from './Configuration.jsx'
 
 const cacheRtl = createCache({
 	key: 'muirtl',
@@ -52,7 +52,7 @@ function App() {
 		<CacheProvider value={cacheRtl}>
 			<ThemeProvider theme={theme}>
 				<div className="App">
-					<Paper elevation={4} square className="App-config-pane">
+					<Paper elevation={4} square className="App-config-pane" sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
 						<Configuration
 							printRef={printRef}
 							pos={pos}

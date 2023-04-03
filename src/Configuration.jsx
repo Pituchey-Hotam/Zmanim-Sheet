@@ -15,10 +15,15 @@ import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import Leaflet from 'leaflet'
 import { IconButton, InputAdornment } from '@mui/material';
 import { Search } from '@mui/icons-material';
+
+import leafletIconRetina from 'leaflet/dist/images/marker-icon-2x.png';
+import leafletIcon from 'leaflet/dist/images/marker-icon.png'
+import leafletShadow from 'leaflet/dist/images/marker-shadow.png'
+delete Leaflet.Icon.Default.prototype._getIconUrl;
 Leaflet.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+    iconRetinaUrl: leafletIconRetina,
+    iconUrl: leafletIcon,
+    shadowUrl: leafletShadow
 });
 
 function Configuration({
@@ -39,7 +44,7 @@ function Configuration({
             setShowHalachot
         }) {
 
-    const [locationName, setLocationName] = useState("לא ידוע");
+    const [locationName, setLocationName] = useState("מחנה גלילות");
 
 	const handlePrint = useReactToPrint({
 		content: () => printRef.current,
@@ -59,7 +64,7 @@ function Configuration({
         const ele = await fetchNameForLocation(newPos);
         setLocationName(ele);
     }
-    useEffect(() => { updateLocationName(pos) }, []);
+    // useEffect(() => { updateLocationName(pos) }, []);
 
     useEffect(() => {
         async function updateElevation() {
@@ -74,7 +79,7 @@ function Configuration({
     }, [locationName, setfooterText]);
 
 	return (
-		<Box sx={{ p: 1, boxSizing: 'border-box', height: '100%' }}>
+		<Box sx={{ flex: 1 }}>
 			<Box className="Configuration-form" sx={{ height: '100%' }}>
                 <form onSubmit={ (e) => { handleSearch(); e.preventDefault(); } }>
                     <TextField label="חפש מיקום" variant="filled" fullWidth value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} InputProps={{
