@@ -2,4 +2,4 @@
 
 ## Pituhey Hotam Project
 
-## [Demo](https://michael-3-141.github.io/zmanim-sheet/)
+## [Demo](https://pituchey-hotam.github.io/zmanim-sheet/)
