@@ -8,10 +8,7 @@ import createCache from '@emotion/cache';
 import { prefixer } from 'stylis';
 
 import Paper from '@mui/material/Paper'
-import { Button, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Box } from '@mui/material';
-import { QuestionMark } from '@mui/icons-material';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 
 import ZmanimSheet from './ZmanimSheet.jsx'
 import Configuration from './Configuration.jsx'
@@ -39,7 +36,7 @@ function App() {
 	const printRef = useRef();
 	const previewWrapperRef = useRef();
 
-	const [pos, setPos] = useState({ lat: 32.145774928228875, lng: 34.81859553369716 });
+	const [pos, setPos] = useState({ lat: 30.022058, lng: 34.931246 });
 	const [elevation, setElevation] = useState(0);
 
 	const [footerText, setfooterText] = useState('');
@@ -47,12 +44,13 @@ function App() {
 	const [halachaFontSize, setHalachaFontSize] = useState('8');
 	const [columnCount, setColumnCount] = useState('7');
 	const [showHalachot, setShowHalachot] = useState(true);
+	const [printFormat, setPrintFormat] = useState('a6');
 
 	return (
 		<CacheProvider value={cacheRtl}>
 			<ThemeProvider theme={theme}>
 				<div className="App">
-					<Paper elevation={4} square className="App-config-pane" sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
+					<Paper elevation={4} square className="App-config-pane" sx={{ display: 'flex', flexDirection: 'column' }}>
 						<Configuration
 							printRef={printRef}
 							pos={pos}
@@ -68,9 +66,11 @@ function App() {
 							columnCount={columnCount}
 							setColumnCount={setColumnCount}
 							showHalachot={showHalachot}
-							setShowHalachot={setShowHalachot} />
+							setShowHalachot={setShowHalachot}
+							printFormat={printFormat}
+							setPrintFormat={setPrintFormat} />
 					</Paper>
-					<div className="App-preview" ref={previewWrapperRef}>
+					<Box className="App-preview" ref={previewWrapperRef} sx={{ p: 1 }}>
 						<ZmanimSheet
 							printRef={printRef}
 							wrapperRef={previewWrapperRef}
@@ -81,57 +81,12 @@ function App() {
 							timesFontSize={timesFontSize}
 							halachaFontSize={halachaFontSize}
 							columnCount={columnCount}
-							showHalachot={showHalachot} />
-						<Box sx={{position: 'absolute', right: 1, bottom: 1}}><AboutButton/></Box>
-					</div>
+							showHalachot={showHalachot}
+							printFormat={printFormat} />
+					</Box>
 				</div>
 			</ThemeProvider>
 		</CacheProvider>
-	);
-}
-
-function AboutButton() {
-	const [open, setOpen] = React.useState(false);
-	const theme = useTheme();
-	const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-	const handleClickOpen = () => { setOpen(true); };
-	const handleClose = () => {	setOpen(false);	};
-
-	return (
-		<>
-			<Paper sx={{m: 1, backgroundColor: "primary.main"}}>
-				<IconButton size="large" onClick={handleClickOpen}>
-					<QuestionMark sx={{ color: 'primary.contrastText' }} />
-				</IconButton>
-			</Paper>
-			<Dialog
-				fullScreen={fullScreen}
-				open={open}
-				onClose={handleClose}>
-				<DialogTitle>
-					{"אודות"}
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText>
-						<p>
-							האתר נועד ליצירת לוחות זמני היום שנתיים. הלוחות כוללים את זמני הנץ החמה והשקיעה - מהם ניתן לחשב את שאר זמני היום הרלונטיים. הלוח מיועד להדפסה על נייר בגודל A6 (4 לוחות בכל דף A4) כך שיתאים בכיס. מומלץ גם לניילן את הלוח.
-						</p>
-						<p>
-							ההלכות המופיעות בלוח נכתבו על פי ההוראות של הרב יצחק שילת (ראש ישיבת ברכת משה במעלה אדומים), בשיעורי הכנה לצבא שהרב מעביר בישיבה. ההלכות כפי שנוסחו כאן אושרו על ידי הרב.
-						</p>
-						<p>
-							יש לקחת בחשבון סטייה של עד כשתי דקות מהזמנים הרשומים בלוח. הלוח מחושב עבור השנה הלועזית הנוכחית. חישוב הזמנים נעשה על ידי ספריית <a href="https://github.com/BehindTheMath/KosherZmanim" target="_blank">KosherJava</a>.
-						</p>
-						אתר זה הוא פרי מיזם פיתוחי חותם - פיתוחים טכנולוגים למען עולם התורה.<br/>
-						<img className="App-logo" src="pituchei_hotam.jpeg" width="131" height="101" alt="Pituchei Hotam" style={{ align: "center" }} />
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button autoFocus onClick={handleClose}>סגור</Button>
-				</DialogActions>
-			</Dialog>
-		</>
 	);
 }
 

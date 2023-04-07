@@ -7,14 +7,15 @@ import { DateTime } from "luxon";
 
 const applyScaling = (scaledWrapper, scaledContent) => {
     scaledContent.style.transform = 'scale(1)';
-
     let { width: childWidth } = scaledContent.getBoundingClientRect();
-    let { width: wrapperWidth } = scaledWrapper.getBoundingClientRect();
+
+    let wrapperStyles = getComputedStyle(scaledWrapper);
+    let wrapperWidth = scaledWrapper.clientWidth - (parseFloat(wrapperStyles.paddingLeft) + parseFloat(wrapperStyles.paddingRight));
     let scale = Math.min(wrapperWidth / childWidth, 1.6);
     scaledContent.style.transform = `scale(${scale})`;
 };
 
-function ZmanimSheet({printRef, wrapperRef, lat, lng, elevation, footerText, timesFontSize, halachaFontSize, columnCount, showHalachot}) {
+function ZmanimSheet({printRef, wrapperRef, lat, lng, elevation, footerText, timesFontSize, halachaFontSize, columnCount, showHalachot, printFormat}) {
     const { sunrises, sunsets } = useMemo(() => calculateYearZmanim(lat, lng, elevation), [lat, lng, elevation]);
     
     const scaledContentRef = useRef();
@@ -27,34 +28,48 @@ function ZmanimSheet({printRef, wrapperRef, lat, lng, elevation, footerText, tim
         return () => { window.removeEventListener("resize", listener) }
     }, [wrapperRef, scaledContentRef])
 
-    const sunriseHalachot = showHalachot ?
+    const sunriseHalachot = useMemo(() => { return (
         <>
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="עלות השחר" content="72/90 דק' לפני הנץ (לחומרא)" />
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תפילה וק&quot;ש" content="משיכיר 45 דק' לפני הנץ" note="אם מתפללים מעלות השחר, לא מברכים על ציצית ותפילין. לאשכנזים - גם לא מברכים ברכת יוצר אור (מברכים רק משיכיר)." />
-        </> : []
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="עלות השחר">72/90 דק' לפני הנץ (לחומרא)</Halacha>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תפילה וק&quot;ש" note="אם מתפללים מעלות השחר, לא מברכים על ציצית ותפילין. לאשכנזים - גם לא מברכים ברכת יוצר אור (מברכים רק משיכיר).">משיכיר 45 דק' לפני הנץ</Halacha>
+        </>
+    )}, [halachaFontSize, columnCount])
 
-    const sunsetHalachot = showHalachot ?
+    const sunsetHalachot = useMemo(() => { return (
         <>
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="מנחה" content="באופן קבוע ב - 12:25 / 13:25 (שעון חורף / קיץ) סוף זמן: שקיעה" />
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="ק&quot;ש של ערבית" content="24 דק' אחרי שקיעה" />
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תוספת שבת" content="יש לנהוג על פי הרשום בלוחות. בשעת הדחק מספיק קדות ספורות." />
-        </> : []
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="מנחה">באופן קבוע ב - 12:25 / 13:25<br/>(שעון חורף / קיץ)<br/>סוף זמן: שקיעה</Halacha>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="ק&quot;ש של ערבית">24 דק' אחרי שקיעה</Halacha>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תוספת שבת">יש לנהוג על פי הרשום בלוחות. בשעת הדחק מספיקות דקות ספורות.</Halacha>
+        </>
+    )}, [halachaFontSize, columnCount])
+
+    const sunriseSheet = ( <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="הנץ" entries={sunrises} halachot={showHalachot ? sunriseHalachot : []} /> );
+    const sunsetSheet = ( <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="שקיעה" entries={sunsets} halachot={showHalachot ? sunsetHalachot : []} /> );
 
     return (
         <>
             <div className="ZmanimSheet-preview" ref={scaledContentRef}>
                 <Paper elevation={2} className="ZmanimSheet-page-box">
-                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="הנץ" entries={sunrises} halachot={sunriseHalachot} />
+                    {sunriseSheet}
                 </Paper>
                 <Paper elevation={2} className="ZmanimSheet-page-box">
-                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="שקיעה" entries={sunsets} halachot={sunsetHalachot} />
+                    {sunsetSheet}
                 </Paper>
             </div>
 
             <div className="ZmanimSheet-hide">
-                <div className="ZmanimSheet-print" ref={printRef}>
-                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="הנץ" entries={sunrises} halachot={sunriseHalachot} />
-                    <SheetPage columnCount={columnCount} footerText={footerText} timesFontSize={timesFontSize} title="שקיעה" entries={sunsets} halachot={sunsetHalachot} />
+                <div className={`ZmanimSheet-print ${printFormat=='a6'? 'ZmanimSheet-print-a6' : ''}`} ref={printRef}>
+                    { printFormat == 'a6' ? 
+                        <>
+                            <div className="ZmanimSheet-print-page">
+                                {...[1,2,3,4].map(()=>{return sunriseSheet})}
+                            </div>
+                            <div className="ZmanimSheet-print-page">
+                                {...[1,2,3,4].map(()=>{return sunsetSheet})}
+                            </div>
+                        </> :
+                        [sunriseSheet, sunsetSheet]
+                    }
                 </div>
             </div>
         </>
@@ -63,10 +78,8 @@ function ZmanimSheet({printRef, wrapperRef, lat, lng, elevation, footerText, tim
 
 const SheetPage = React.forwardRef((props, ref) => {
     const {title, entries, halachot, footerText, timesFontSize, columnCount} = props;
-    const rows = []
 
     const overflowRef = useRef();
-
     useEffect(() => {
         if(overflowRef.current && overflowRef.current.scrollWidth > overflowRef.current.clientWidth) {
             overflowRef.current.style['border-left'] = "4px solid red";
@@ -75,38 +88,44 @@ const SheetPage = React.forwardRef((props, ref) => {
             overflowRef.current.style['border-left'] = "";
         }
     })
-    
-    rows.push(
-        <div className="ZmanimSheet-row ZmanimSheet-title" style={{ width: (100/columnCount)+'%' }}><p>{title}</p></div>
-    )
-    
-    for (let i = 0; i < entries.length; i++) {
-        const entry = entries[i];
 
-        const time = <div className="ZmanimSheet-row">
-            <p>{entry.date.day}</p>
-            <p>{entry.time.setZone('Asia/Jerusalem').toFormat('H:mm')}</p>
-        </div>
-    
-        var row = undefined;
+    const rows = useMemo(() => {
+        const rows = [];
         
-        if(i === 0 || entry.time.month !== entries[i-1].time.month){
-            row = 
-                <div>
-                    <div className="ZmanimSheet-row ZmanimSheet-header">
-                        <p>{ entry.time.setLocale('he-IL').toFormat('MM - MMMM') }</p>
+        rows.push(
+            <div className="ZmanimSheet-row ZmanimSheet-title" style={{ width: (100/columnCount)+'%' }}><p>{title}</p></div>
+        )
+        
+        for (let i = 0; i < entries.length; i++) {
+            const entry = entries[i];
+    
+            const time = <div className="ZmanimSheet-row">
+                <p>{entry.date.day}</p>
+                <p>{entry.time.setZone('Asia/Jerusalem').toFormat('H:mm')}</p>
+            </div>
+        
+            var row = undefined;
+            
+            if(i === 0 || entry.time.month !== entries[i-1].time.month){
+                row = 
+                    <div>
+                        <div className="ZmanimSheet-row ZmanimSheet-header">
+                            <p>{ entry.time.setLocale('he-IL').toFormat('MM - MMMM') }</p>
+                        </div>
+                        {time}
                     </div>
-                    {time}
-                </div>
+            }
+            else {
+                row = time
+            }
+            
+            rows.push(React.cloneElement(row, {style: { width: (100/columnCount)+'%' }}));    
         }
-        else {
-            row = time
-        }
-        
-        rows.push(React.cloneElement(row, {style: { width: (100/columnCount)+'%' }}));    
-    }
-    
-    rows.push(halachot)
+
+        rows.push(halachot)
+        return rows;
+
+    }, [title, entries, halachot, columnCount]);
     
     return (
         <div className="ZmanimSheet-page" ref={(r)=>{overflowRef.current = r; if(ref) ref(r)}} style={{ 'fontSize': +timesFontSize }}>
@@ -118,11 +137,11 @@ const SheetPage = React.forwardRef((props, ref) => {
     )
 });
 
-function Halacha({title, content, note, fontSize, columnCount}) {
+function Halacha({title, note, fontSize, columnCount, children}) {
     return (
         <div className="ZmanimSheet-row ZmanimSheet-halacha" style={{ width: (100/columnCount)+'%' }} >
             <p className="ZmanimSheet-halacha-title">{title}</p>
-            <p style={{ 'fontSize': +fontSize }}>{content}</p>
+            <p style={{ 'fontSize': +fontSize }}>{children}</p>
             { note !== undefined ? <p className="ZmanimSheet-halacha-note" style={{ 'fontSize': fontSize-2 }}>{note}</p> : "" }
         </div>
     )

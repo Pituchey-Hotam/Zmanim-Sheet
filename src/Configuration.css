@@ -8,9 +8,43 @@
     width: 100%;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 950px) {
     .Configuration-map {
         height: 30vh;
         flex: none !important;
+    }
+}
+
+@media only screen and (min-width: 950px) {
+    .Mui-expanded {
+        flex: 1;
+    }
+    
+    .MuiAccordion-root {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .MuiAccordionDetails-root {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-sizing: border-box;
+    }
+    
+    .MuiAccordion-region {
+        height: 100%;
+    }
+    
+    .MuiCollapse-wrapperInner {
+        height: 100%;
+    }
+    
+    .MuiCollapse-wrapper {
+        height: 100%;
+    }
+    
+    .MuiCollapse-entered {
+        height: 100% !important;
     }
 }

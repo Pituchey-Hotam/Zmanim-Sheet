@@ -1,26 +1,42 @@
 .ZmanimSheet-preview {
-    padding: 0 16px;
     direction: rtl;
     transform-origin: 50% 0;
 }
 
+@media only screen and (min-width: 1400px) {
+    .ZmanimSheet-preview {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      align-content: center;
+    }
+  }
+
 .ZmanimSheet-page-box {
-    padding: 16px;
-    margin: 8px 0 8px 0;
+    margin: 2px;
+    padding: 8px;
     overflow: hidden;
 }
 
 @media print {
     @page {
         size: 105mm 149mm;
+        /* size: 210mm 219mm; */
     }
 
     html {
         margin: auto;
     }
-
+    
     .ZmanimSheet-page {
-        transform: scale(97%);
+        transform: scale(97%);   
+    }
+    
+    .ZmanimSheet-print-page {
+        display: flex;
+        flex-wrap: wrap;
+        width: 210mm;
+        height: 297mm;
         page-break-inside: avoid;
     }
 }
