@@ -24,7 +24,7 @@ import PrintIcon from '@mui/icons-material/Print';
 
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
 import Leaflet from 'leaflet'
-import { FormHelperText, IconButton, InputAdornment } from '@mui/material';
+import { IconButton, InputAdornment } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 
 import pitucheyHotamLogo from './assets/pituchey_hotam.svg'
@@ -66,13 +66,14 @@ function Configuration({
         documentTitle: "זמני היום ל" + locationName + " - " + new Date().getFullYear()
     });
 
-    const [searchQuery, setSearchQuery] = useState("");
-    const handleSearch = async () => {
+    const handleSearch = async (searchQuery) => {
         const newPos = await fetchLocationResultsFor(searchQuery);
         if (newPos) {
             setPos(newPos);
             setLocationName(searchQuery);
+            return true;
         }
+        return false;
     };
 
     const updateLocationName = async (newPos) => {
@@ -102,22 +103,14 @@ function Configuration({
                 <img src={pitucheyHotamLogo} style={{ height: '1.5em', verticalAlign: 'middle' }}></img>
             </Typography>
             <Typography variant="caption" gutterBottom sx={{ ml: 1, mr: 1, textAlign: 'justify' }}>
-                זמני היום לכל השנה אצלכם בכיס!<br/>הלוח כולל את זמני הנץ החמה והשקיעה - מהם ניתן לחשב את שאר זמני היום הרלונטיים. כדי לחסוך במקום, רק התאריכים שבהם השעה משתנית מופיעים בלוח. ההלכות המופיעות בלוח נכתבו על פי ההוראות של הרב יצחק שילת (ראש ישיבת מעלה אדומים), בשיעורי הכנה לצבא שהרב מעביר בישיבה. ההלכות כפי שנוסחו כאן אושרו על ידי הרב.
+            צריכים לדעת את זמני התפילות ואין לכם גישה לטלפון? כל זמני היום לכל השנה בלוח שמתאים בכיס!<br/>הלוח כולל את זמני הנץ החמה והשקיעה - מהם ניתן לחשב את שאר זמני היום הרלונטיים. כדי לחסוך במקום, רק התאריכים שבהם השעה משתנית מופיעים בלוח. ההלכות המופיעות בלוח נכתבו על פי <a href="https://youtu.be/AyQCyrcQzXs" target="_blank">ההוראות של הרב יצחק שילת (ראש ישיבת מעלה אדומים)</a>. ההלכות כפי שנוסחו כאן אושרו על ידי הרב.
             </Typography>
             <ConfigStage stageNumber={1} title="בחר מיקום" currentStage={currentStage} handleChange={setStage}>
                 <Typography variant="caption" gutterBottom sx={{ textAlign: 'justify' }}>
                     בחרו את המקום עבורו תרצו לחשב את זמני היום. ניתן לחפש מקום בשורת החיפוש (לחיפוש בסיס יש להשתמש בשם המחנה, למשל 'מחנה פלס') או לגרור את הסמן במפה למיקום המבוקש.
                 </Typography>
-                <form onSubmit={(e) => { handleSearch(); e.preventDefault(); }}>
-                    <TextField label="חפש מיקום" variant="filled" fullWidth value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} InputProps={{
-                        endAdornment: <InputAdornment position="end">
-                            <IconButton type="submit" edger="end">
-                                <Search />
-                            </IconButton>
-                        </InputAdornment>
-                    }} />
-                </form>
-                <Box className="Configuration-map" sx={{ mt: 1, maxHeight: 256, flex: 1 }}>
+                <SearchBox handleSearch={handleSearch} />
+                <Box className="Configuration-map" sx={{ mt: 1, maxHeight: 384, flex: 1 }}>
                     <SelectionMap pos={pos} setPos={(pos) => { setPos(pos); updateLocationName(pos); }} />
                 </Box>
 
@@ -128,7 +121,7 @@ function Configuration({
 
             <ConfigStage stageNumber={2} title="עיצוב" currentStage={currentStage} handleChange={setStage}>
                 <Typography variant="caption" gutterBottom sx={{ textAlign: 'justify' }}>
-                    אם הזמנים לא מתאימים בדף, הגדילו את מספר העמודות ו/או הקטינו את גודל הגופן.
+                    אם הזמנים לא מתאימים לגודל הדף, הגדילו את מספר העמודות ו/או הקטינו את גודל הגופן.
                 </Typography>
                 <TextField label="מספר עמודות" variant="filled" fullWidth type="number" value={columnCount} onChange={(e) => setColumnCount(e.target.value)} />
                 <Box sx={{ mt: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -176,6 +169,23 @@ function ConfigStage({ children, stageNumber, title, currentStage, handleChange,
             </AccordionDetails>
         </Accordion>
     )
+}
+
+function SearchBox({ handleSearch }) {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [noResultsFound, setNoResultsFound] = useState(false);
+
+    return (
+        <form onSubmit={async (e) => { e.preventDefault(); const results = await handleSearch(searchQuery); setNoResultsFound(!results); }}>
+            <TextField error={noResultsFound} helperText={noResultsFound ? "לא נמצאו תוצאות" : undefined} label="חפש מיקום" variant="filled" fullWidth value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setNoResultsFound(false); }} InputProps={{
+                endAdornment: <InputAdornment position="end">
+                    <IconButton type="submit" edger="end">
+                        <Search />
+                    </IconButton>
+                </InputAdornment>
+            }} />
+        </form>
+    );
 }
 
 function SelectionMap({ pos, setPos }) {

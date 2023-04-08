@@ -37,9 +37,9 @@ function ZmanimSheet({printRef, wrapperRef, lat, lng, elevation, footerText, tim
 
     const sunsetHalachot = useMemo(() => { return (
         <>
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="מנחה">באופן קבוע ב - 12:25 / 13:25<br/>(שעון חורף / קיץ)<br/>סוף זמן: שקיעה</Halacha>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="מנחה">תחילת זמן: בשעון חורף ב-12:25, בשעון קיץ ב-13:25.<br/>סוף זמן: שקיעה</Halacha>
             <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="ק&quot;ש של ערבית">24 דק' אחרי שקיעה</Halacha>
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תוספת שבת">יש לנהוג על פי הרשום בלוחות. בשעת הדחק מספיקות דקות ספורות.</Halacha>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תוספת שבת">יש לנהוג על פי הרשום בלוחות. בשעת הדחק מספיקות דקות ספורות לפני השקיעה.</Halacha>
         </>
     )}, [halachaFontSize, columnCount])
 
