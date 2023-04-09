@@ -19,11 +19,6 @@
 }
 
 @media print {
-    @page {
-        size: 105mm 149mm;
-        /* size: 210mm 219mm; */
-    }
-
     html {
         margin: auto;
     }

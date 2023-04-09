@@ -63,6 +63,7 @@ function Configuration({
 
     const handlePrint = useReactToPrint({
         content: () => printRef.current,
+        pageStyle: () => ( `@page {size: ${printFormat == 'a6' ? '210mm 297mm' : '105mm 149mm'}; margin: 0; } body { -webkit-print-color-adjust: exact; color-adjust: exact; }` ),
         documentTitle: "זמני היום ל" + locationName + " - " + new Date().getFullYear()
     });
 
