@@ -108,7 +108,7 @@ function Configuration({
             </Typography>
             <ConfigStage stageNumber={1} title="בחר מיקום" currentStage={currentStage} handleChange={setStage}>
                 <Typography variant="caption" gutterBottom sx={{ textAlign: 'justify' }}>
-                    בחרו את המקום עבורו תרצו לחשב את זמני היום. ניתן לחפש מקום בשורת החיפוש (לחיפוש בסיס יש להשתמש בשם המחנה, למשל 'מחנה פלס') או לגרור את הסמן במפה למיקום המבוקש.
+                    בחרו את המקום עבורו תרצו לחשב את זמני היום. ניתן לחפש מקום בשורת החיפוש (לחיפוש בסיס צבאי יש להשתמש בשם המחנה, למשל 'מחנה פלס') או לגרור את הסמן במפה למיקום המבוקש.
                 </Typography>
                 <SearchBox handleSearch={handleSearch} />
                 <Box className="Configuration-map" sx={{ mt: 1, maxHeight: 384, flex: 1 }}>
