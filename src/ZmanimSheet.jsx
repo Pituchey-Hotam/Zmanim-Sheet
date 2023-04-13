@@ -31,7 +31,7 @@ function ZmanimSheet({printRef, wrapperRef, lat, lng, elevation, footerText, tim
     const sunriseHalachot = useMemo(() => { return (
         <>
             <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="עלות השחר">72/90 דק' לפני הנץ (לחומרא)</Halacha>
-            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תפילה וק&quot;ש" note="אם מתפללים מעלות השחר, לא מברכים על ציצית ותפילין. לאשכנזים - גם לא מברכים ברכת יוצר אור (מברכים רק משיכיר).">משיכיר 45 דק' לפני הנץ</Halacha>
+            <Halacha fontSize={halachaFontSize} columnCount={columnCount} title="תפילה וק&quot;ש" note="אם מתפללים לפני זמן משיכיר, לא מברכים על ציצית ותפילין. לאשכנזים - גם לא מברכים ברכת יוצר אור (מברכים רק משיכיר).">משיכיר 45 דק' לפני הנץ</Halacha>
         </>
     )}, [halachaFontSize, columnCount])
 

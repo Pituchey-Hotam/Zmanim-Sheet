@@ -104,7 +104,7 @@ function Configuration({
                 <img src={pitucheyHotamLogo} style={{ height: '1.5em', verticalAlign: 'middle' }}></img>
             </Typography>
             <Typography variant="caption" gutterBottom sx={{ ml: 1, mr: 1, textAlign: 'justify' }}>
-            צריכים לדעת את זמני התפילות ואין לכם גישה לטלפון? כל זמני היום לכל השנה בלוח שמתאים בכיס!<br/>הלוח כולל את זמני הנץ החמה והשקיעה - מהם ניתן לחשב את שאר זמני היום הרלונטיים. כדי לחסוך במקום, רק התאריכים שבהם השעה משתנית מופיעים בלוח. ההלכות המופיעות בלוח נכתבו על פי <a href="https://youtu.be/AyQCyrcQzXs" target="_blank">ההוראות של הרב יצחק שילת (ראש ישיבת מעלה אדומים)</a>. ההלכות כפי שנוסחו כאן אושרו על ידי הרב.
+            צריכים לדעת את זמני התפילות ואין לכם גישה לטלפון? הדפיסו בקלות את זמני היום לכל לכל השנה בלוח שמתאים בכיס!<br/>הלוח כולל את זמני הנץ החמה והשקיעה - מהם ניתן לחשב את שאר זמני היום הרלונטיים. כדי לחסוך במקום, רק התאריכים שבהם השעה משתנית מופיעים בלוח. ההלכות המופיעות בלוח נכתבו על פי <a href="https://youtu.be/AyQCyrcQzXs" target="_blank">ההוראות של הרב יצחק שילת (ראש ישיבת מעלה אדומים)</a>. ההלכות כפי שנוסחו כאן אושרו על ידי הרב.
             </Typography>
             <ConfigStage stageNumber={1} title="בחר מיקום" currentStage={currentStage} handleChange={setStage}>
                 <Typography variant="caption" gutterBottom sx={{ textAlign: 'justify' }}>
